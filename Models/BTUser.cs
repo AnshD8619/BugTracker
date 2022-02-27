@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,5 +18,17 @@ namespace BugTracker.Models
 
         [NotMapped]
         public string FullName { get { return $"{FirstName} {LastName}"; } }
+
+        [DisplayName("Avatar")]
+        public string AvatarFileName { get; set; }
+        public byte[] AvatarFileData { get; set; }
+
+        [Display(Name = "File Extension")]
+        public string AvatarContentType { get; set; }
+
+        public int? CompanyId { get; set; }
+
+        public virtual Company Company { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
     }
 }
