@@ -1,10 +1,13 @@
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services;
+using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +33,7 @@ namespace BugTracker
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    DataUtility.GetConnectionString(Configuration), u => u.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -38,6 +41,16 @@ namespace BugTracker
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<IBTRolesService, BTRolesService>();
+            services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
+            services.AddScoped<IBTProjectService, BTProjectService>();
+            services.AddScoped<IBTTicketService, BTTicketService>();
+            services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
+            services.AddScoped<IBTNotificationService, BTNotificationService>();
+            services.AddScoped<IBTInviteService, BTInviteService>();
+            services.AddScoped<IBTFileService, BTFileService>();
+            services.AddScoped<IEmailSender, BTEmailService>();
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddControllersWithViews();
         }
 

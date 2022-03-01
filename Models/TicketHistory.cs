@@ -22,6 +22,9 @@ namespace BugTracker.Models
         [DisplayName("Date Modified")]
         public DateTimeOffset Created { get; set; }
 
+        [DisplayName("Description of Change")]
+        public string Description { get; set; }
+
         [DisplayName("Team Member")]
         public string UserId { get; set; }
 
