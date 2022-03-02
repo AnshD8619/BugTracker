@@ -432,6 +432,9 @@ namespace BugTracker.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("NewValue")
                         .HasColumnType("text");
 
@@ -658,7 +661,7 @@ namespace BugTracker.Data.Migrations
             modelBuilder.Entity("BugTracker.Models.Invite", b =>
                 {
                     b.HasOne("BugTracker.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("Invites")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -879,6 +882,8 @@ namespace BugTracker.Data.Migrations
 
             modelBuilder.Entity("BugTracker.Models.Company", b =>
                 {
+                    b.Navigation("Invites");
+
                     b.Navigation("Members");
 
                     b.Navigation("Projects");

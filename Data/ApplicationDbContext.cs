@@ -13,7 +13,9 @@ namespace BugTracker.Data
             : base(options)
         {
         }
-            
+
+        // Tables for each model
+        #region Database Tables
         public DbSet<Company> Companies { get; set; }
         public DbSet<Invite> Invites { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -25,7 +27,8 @@ namespace BugTracker.Data
         public DbSet<TicketHistory> TicketHistories { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
-        public DbSet<TicketType> TicketTypes { get; set; }
+        public DbSet<TicketType> TicketTypes { get; set; } 
+        #endregion
     }
     
 }

@@ -8,8 +8,11 @@ namespace BugTracker.Models
 {
     public class TicketAttachment
     {
+        // Primary Key
         public int Id { get; set; }
 
+        // Foreign keys compare to different table columns
+        #region Foreign Keys
         [DisplayName("Ticket")]
         public int TicketId { get; set; }
 
@@ -25,16 +28,20 @@ namespace BugTracker.Models
         [NotMapped]
         [DataType(DataType.Upload)]
         public IFormFile FormFile { get; set; }
-        
+
         [DisplayName("File Name")]
         public string FileName { get; set; }
-        
+
         public byte[] FileData { get; set; }
-        
+
         [DisplayName("File Extension")]
         public string FileContentType { get; set; }
+        #endregion
 
+        // Connects to other Models and database tables
+        #region Navigational Properties
         public virtual Ticket Ticket { get; set; }
-        public virtual BTUser User { get; set; }
+        public virtual BTUser User { get; set; } 
+        #endregion
     }
 }

@@ -5,16 +5,22 @@ namespace BugTracker.Models
 {
     public class Invite
     {
+        // Primary Key
         public int Id { get; set; }
 
+        // Date invite was sent
         [DisplayName("Date Sent")]
         public DateTimeOffset InviteDate { get; set; }
 
+        // Date that invitee joined
         [DisplayName("Join Date")]
         public DateTimeOffset JoinDate { get; set; }
 
         [DisplayName("Code")]
         public Guid CompanyToken { get; set; }
+
+        // Foreign keys compare to different table columns
+        #region Foreign Keys
 
         [DisplayName("Company")]
         public int CompanyId { get; set; }
@@ -35,13 +41,18 @@ namespace BugTracker.Models
         public string InviteeFirstName { get; set; }
 
         [DisplayName("Invitee Last Name")]
-        public string InviteeLastName { get; set; }
+        public string InviteeLastName { get; set; } 
+        #endregion
 
         public bool IsValid { get; set; }
 
-        public virtual Company Company { get; set; }    
+        // Connects to other Models and database tables
+        #region Navigational Properties
+
+        public virtual Company Company { get; set; }
         public virtual BTUser Invitor { get; set; }
         public virtual BTUser Invitee { get; set; }
-        public virtual Project Project { get; set; }
+        public virtual Project Project { get; set; } 
+        #endregion
     }
 }

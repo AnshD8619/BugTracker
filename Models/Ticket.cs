@@ -7,8 +7,11 @@ namespace BugTracker.Models
 {
     public class Ticket
     {
+        // Primary Key
         public int Id { get; set; }
 
+        // Foreign keys compare to different table columns
+        #region Foreign Keys
         [Required]
         [StringLength(50)]
         [DisplayName("Title")]
@@ -16,7 +19,7 @@ namespace BugTracker.Models
 
         [Required]
         [DisplayName("Description")]
-        public string Description { get; set; } 
+        public string Description { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayName("Created")]
@@ -46,18 +49,25 @@ namespace BugTracker.Models
 
         [DisplayName("Ticket Developer")]
         public string DeveloperUserId { get; set; }
+        #endregion
 
+        // Connects to other Models and database tables
+        #region Navigational Properties
         public virtual Project Project { get; set; }
         public virtual TicketType TicketType { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
         public virtual BTUser OwnerUser { get; set; }
         public virtual BTUser DeveloperUser { get; set; }
+        #endregion
 
+        // Get ticket comments, attachments, notifications, and history by creating new instances of each model
+        #region Ticket Properties
         public virtual ICollection<TicketComment> Comments { get; set; } = new HashSet<TicketComment>();
         public virtual ICollection<TicketAttachment> Attachments { get; set; } = new HashSet<TicketAttachment>();
         public virtual ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
-        public virtual ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
+        public virtual ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>(); 
+        #endregion
 
     }
 }
