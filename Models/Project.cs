@@ -30,10 +30,12 @@ namespace BugTracker.Models
 
         // Start DateTime of project
         [DisplayName("Start Date")]
+        [DataType(DataType.Date)]
         public DateTimeOffset StartDate { get; set; }
 
         // End DateTime of project
         [DisplayName("End Date")]
+        [DataType(DataType.Date)]
         public DateTimeOffset EndDate { get; set; }
 
         // Priority Id integer associated with each instance of project if it exists

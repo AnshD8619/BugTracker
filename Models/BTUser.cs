@@ -34,7 +34,7 @@ namespace BugTracker.Models
         #endregion
 
         // Gets Company Id associated with each instance of BTUser
-        public int? CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         // Connects to other Models and database tables
         #region Navigational Properties

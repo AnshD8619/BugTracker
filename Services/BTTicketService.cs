@@ -45,6 +45,38 @@ namespace BugTracker.Services
         }
         #endregion
 
+        #region AddTicketAttachmentAsync
+        public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketAttachment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        } 
+        #endregion
+
+        #region AddTicketCommentAsync
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketComment);
+                await _context.SaveChangesAsync();
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
+        #endregion
+
         #region ArchiveTicketAsync
         public async Task ArchiveTicketAsync(Ticket ticket)
         {
@@ -283,12 +315,82 @@ namespace BugTracker.Services
 
         #endregion
 
+        #region GetUnassignedTicketsAsync
+        public async Task<List<Ticket>> GetUnassignedTicketsAsync(int companyId)
+        {
+            List<Ticket> tickets = new(); // Instantiates List tickets of type Ticket
+
+            try
+            {
+                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(u => string.IsNullOrEmpty(u.DeveloperUserId)).ToList();
+                return tickets;
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
+        #endregion
+
+        #region GetTicketAttachmentByIdAsync
+        public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
+        {
+            try
+            {
+                TicketAttachment ticketAttachment = await _context.TicketAttachments
+                                                                  .Include(t => t.User)
+                                                                  .FirstOrDefaultAsync(t => t.Id == ticketAttachmentId);
+                return ticketAttachment;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region GetTicketAsNoTrackingAsync
+        public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId)
+        {
+            try
+            {
+                return await _context.Tickets
+                   .Include(t => t.DeveloperUser)
+                   .Include(t => t.Project)
+                   .Include(t => t.TicketPriority)
+                   .Include(t => t.TicketStatus)
+                   .Include(t => t.TicketType)
+                   .AsNoTracking()
+                   .FirstOrDefaultAsync(u => u.Id == ticketId); // Gets all tickets from Tickets table from database by comparing ticket ids
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
+        #endregion
+
         #region GetTickets Tasks
+
         public async Task<Ticket> GetTicketByIdAsync(int ticketId)
         {
             try
             {
-                return await _context.Tickets.FirstOrDefaultAsync(u => u.Id == ticketId); // Gets all tickets from Tickets table from database by comparing ticket ids
+                return await _context.Tickets
+                    .Include(t => t.DeveloperUser)
+                    .Include(t => t.OwnerUser)
+                    .Include(t => t.Project)
+                    .Include(t => t.TicketPriority)
+                    .Include(t => t.TicketStatus)
+                    .Include(t => t.TicketType)
+                    .Include(t => t.Comments)
+                    .Include(t => t.Attachments)
+                    .Include(t => t.History)
+                    .FirstOrDefaultAsync(u => u.Id == ticketId); // Gets all tickets from Tickets table from database by comparing ticket ids
             }
 
             catch (Exception)
@@ -363,19 +465,19 @@ namespace BugTracker.Services
             {
                 if (await _rolesService.IsUserInRoleAsync(btUser, Roles.Admin.ToString())) // Checks if user is an admin by calling IsUserInRoleAsync from roles service
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service
                         .SelectMany(u => u.Tickets).ToList();
                 }
 
                 else if (await _rolesService.IsUserInRoleAsync(btUser, Roles.Developer.ToString())) // Checks if user is a developer by calling IsUserInRoleAsync from roles service
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service where developer user id = user id
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service where developer user id = user id
                         .SelectMany(u => u.Tickets).Where(u => u.DeveloperUserId == userId).ToList();
                 }
 
                 else if (await _rolesService.IsUserInRoleAsync(btUser, Roles.Submitter.ToString())) // Checks if user is a submitter by calling IsUserInRoleAsync from roles service
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service where owner user id = user id
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId)) // Adds tickets to list by calling GetAllProjectsByCompany from project service where owner user id = user id
                         .SelectMany(u => u.Tickets).Where(u => u.OwnerUserId == userId).ToList();
                 }
 

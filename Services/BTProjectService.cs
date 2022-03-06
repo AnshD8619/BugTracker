@@ -106,9 +106,23 @@ namespace BugTracker.Services
         #region ArchiveProjectAsync
         public async Task ArchiveProjectAsync(Project project)
         {
-            project.Archived = true;
-            _context.Update(project); // Adds project to database
-            await _context.SaveChangesAsync(); // Saves data asynchronously
+            try
+            {
+                project.Archived = true;
+                await UpdateProjectAsync(project);
+
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = true;
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
         }
         #endregion
 
@@ -126,46 +140,76 @@ namespace BugTracker.Services
         #endregion
 
         #region GetProjects Tasks
-        public async Task<List<Project>> GetAllProjectsByCompany(int companyId)
+        public async Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId)
         {
             List<Project> projects = new(); // Instantiates list projects of type Project
-            projects = await _context.Projects.Where(u => u.CompanyId == companyId) // Gets all projects from Projects table in database where company ids match
-                            .Include(u => u.Members)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.Comments)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.Attachments)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.History)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.Notifications)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.DeveloperUser)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.OwnerUser)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.TicketStatus)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.TicketPriority)
-                            .Include(u => u.Tickets)
-                                .ThenInclude(t => t.TicketType)
-                            .Include(u => u.ProjectPriority)
-                            .ToListAsync();
+            try
+            {
+                projects = await _context.Projects.Where(u => u.CompanyId == companyId && u.Archived == false) // Gets all projects from Projects table in database where company ids match
+                                .Include(u => u.Members)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Comments)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Attachments)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.History)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Notifications)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.DeveloperUser)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.OwnerUser)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketStatus)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketPriority)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketType)
+                                .Include(u => u.ProjectPriority)
+                                .ToListAsync();
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
 
             return projects;
 
         }
 
-        public async Task<List<Project>> GetAllProjectsByPriority(int companyId, string priorityName)
+        public async Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
         {
-            List<Project> projects = await GetAllProjectsByCompany(companyId); // Gets list projects of type Project by calling GetAllProjectsByCompany
+            List<Project> projects = await GetAllProjectsByCompanyAsync(companyId); // Gets list projects of type Project by calling GetAllProjectsByCompany
             int priorityId = await LookupProjectPriorityId(priorityName); // Gets priority id by calling LookupProjectPriorityId
             return projects.Where(u => u.ProjectPriorityId == priorityId).ToList(); // Returns projects list where the priority ids match
         }
 
-        public async Task<List<Project>> GetArchivedProjectsByCompany(int companyId)
+
+        public async Task<List<Project>> GetArchivedProjectsByCompanyAsync(int companyId)
         {
-            List<Project> projects = await GetAllProjectsByCompany(companyId); // Gets list projects of type Project by calling GetAllProjectsByCompany
+            List<Project> projects = await _context.Projects.Where(u => u.CompanyId == companyId && u.Archived == true) // Gets all projects from Projects table in database where company ids match
+                                .Include(u => u.Members)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Comments)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Attachments)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.History)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.Notifications)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.DeveloperUser)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.OwnerUser)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketStatus)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketPriority)
+                                .Include(u => u.Tickets)
+                                    .ThenInclude(t => t.TicketType)
+                                .Include(u => u.ProjectPriority)
+                                .ToListAsync();
 
             return projects.Where(u => u.Archived == true).ToList(); // Returns projects where Archived = true
         }
@@ -212,7 +256,7 @@ namespace BugTracker.Services
         #region GetProjectMembersByRoleAsync
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
-            Project project = await _context.Projects // Gets project fo type Project by going through Projects table in database where project ids match
+            Project project = await _context.Projects // Gets project of type Project by going through Projects table in database where project ids match
                 .Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
 
             List<BTUser> members = new(); // Instantiates list members of type BTUser
@@ -233,6 +277,39 @@ namespace BugTracker.Services
         {
             throw new System.NotImplementedException();
         }
+        #endregion
+
+        #region GetUnassignedProjectsAsync
+        public async Task<List<Project>> GetUnassignedProjectsAsync(int companyId)
+        {
+            List<Project> result = new();
+            List<Project> projects = new();
+
+            try
+            {
+                projects = await _context.Projects
+                    .Include(u => u.ProjectPriority)
+                    .Where(u => u.CompanyId == companyId)
+                    .ToListAsync();
+
+                foreach (Project project in projects)
+                {
+                    if ((await GetProjectMembersByRoleAsync(project.Id, nameof(Roles.ProjectManager))).Count == 0)
+                    {
+                        result.Add(project);
+                    }
+
+
+
+                }
+                return result;
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
         #endregion
 
         #region GetUserProjectsAsync
@@ -281,6 +358,31 @@ namespace BugTracker.Services
             List<BTUser> users = await _context.Users.Where(u => u.Projects.All(p => p.Id != projectId)).ToListAsync(); // Gets list users of type BTUser by going through Users table in database where project ids dont match
 
             return users.Where(u => u.CompanyId == companyId).ToList(); // Returns users where company ids match
+        }
+        #endregion
+
+        #region IsAssignedProjectManagerAsync
+        public async Task<bool> IsAssignedProjectManagerAsync(string userId, int projectId)
+        {
+            try
+            {
+                string projectManagerId = (await GetProjectManagerAsync(projectId))?.Id;
+
+                if (projectManagerId == userId)
+                {
+                    return true;
+                }
+
+                else
+                {
+                    return false;
+                }
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
         }
         #endregion
 
@@ -396,12 +498,35 @@ namespace BugTracker.Services
         }
         #endregion
 
+        #region Restore Project
+        public async Task RestoreProjectAsync(Project project)
+        {
+            try
+            {
+                project.Archived = false;
+                await UpdateProjectAsync(project);
+
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = false;
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
+
         #region UpdateProjectAsync
         public async Task UpdateProjectAsync(Project project)
         {
             _context.Update(project); // Updates project in database
             await _context.SaveChangesAsync(); // Saves data asynchronously
-        } 
+        }
         #endregion
     }
 }
