@@ -39,7 +39,7 @@ namespace BugTracker.Services
         {
             BTUser currentPM = await GetProjectManagerAsync(projectId); // Gets currentPM of type BTUser by calling GetProjectManagerAsync
 
-            if (currentPM != null) // If a value if recieved that is not null
+            if (currentPM != null) // If a value is recieved that is not null
             {
                 try
                 {
@@ -54,6 +54,8 @@ namespace BugTracker.Services
                 }
             }
 
+
+
             try
             {
                 await AddProjectManagerAsync(userId, projectId); // Adds PM by calling AddProjectManagerAsync
@@ -66,6 +68,7 @@ namespace BugTracker.Services
                 return false;
 
             }
+
         }
 
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
@@ -226,9 +229,18 @@ namespace BugTracker.Services
         public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
             Project project = await _context.Projects // Gets project of type Project by going through Projects table in database where the project and company ids match
-                .Include(u => u.Tickets)
-                .Include(u => u.Members)
-                .Include(u => u.ProjectPriority)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.TicketPriority)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.TicketStatus)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.TicketType)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.DeveloperUser)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.OwnerUser)
+                .Include(p => p.Members)
+                .Include(p => p.ProjectPriority)
                 .FirstOrDefaultAsync(u => u.Id == projectId && u.CompanyId == companyId);
 
             return project;
@@ -309,7 +321,7 @@ namespace BugTracker.Services
             {
                 throw;
             }
-        } 
+        }
         #endregion
 
         #region GetUserProjectsAsync
