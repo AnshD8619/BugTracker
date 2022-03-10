@@ -58,7 +58,7 @@ namespace BugTracker.Services
 
             try
             {
-                await AddProjectManagerAsync(userId, projectId); // Adds PM by calling AddProjectManagerAsync
+                await AddUserToProjectAsync(userId, projectId); // Adds PM by calling AddProjectManagerAsync
                 return true;
             }
 

@@ -94,7 +94,7 @@
                                         <p class="text-muted m-b-0">Project Manager</p>
                                         @if (User.IsInRole(nameof(Roles.Admin)) || (btUser.Id == projectManager.Id))
                                         {
-                                            <a class="btn btn-xs btn-outline-dark" style="font:small" asp-action="AssignMembers" asp-controller="Project" asp-route-id="@Model.Id">Manage Team</a>
+                                            <a class="btn btn-xs btn-outline-dark" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-id="@Model.Id">Manage Team</a>
                                         }
                                     </div>
                                 </div>
@@ -135,12 +135,12 @@
                                             <div class="media">
                                                 @if (member.AvatarFileData != null)
                                                 {
-                                                    <img class="" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarFileData))" alt="" />
+                                                    <img class="" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarFileData))" alt=""  style="width:60px; height:60px;" />
                                                 }
 
                                                 else
                                                 {
-                                                    <img class="" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="">
+                                                    <img class="" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt=""  style="width:60px; height:60px;" />
                                                 }
                                             </div>
                                         </a>

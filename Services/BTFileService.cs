@@ -19,7 +19,7 @@ namespace BugTracker.Services
             try
             {
                 string imageBase64Data = Convert.ToBase64String(fileData); // Gets imageBase64Data by converting file data to a string of base 64
-                return string.Format($"data: {extension};base64,{imageBase64Data}"); // Returns string formatted with extension and imageBase64Data
+                return string.Format($"data:image/{extension};base64,{imageBase64Data}"); // Returns string formatted with extension and imageBase64Data
             }
 
             catch (Exception)
@@ -34,9 +34,9 @@ namespace BugTracker.Services
         {
             try
             {
-                MemoryStream memoryStream = new(); // Initializes memoryStream of type MemoryStream
+                MemoryStream memoryStream = new MemoryStream(); // Initializes memoryStream of type MemoryStream
                 await file.CopyToAsync(memoryStream); // Uploads file content to memory stream to be backed up and stored
-                byte[] byteFile = memoryStream.ToArray(); // Turns the stream to a byte array
+                var byteFile = memoryStream.ToArray(); // Turns the stream to a byte array
                 memoryStream.Close(); // Closes memory stream
                 memoryStream.Dispose(); // Releases resources in memory stream
                 return byteFile;
@@ -53,30 +53,23 @@ namespace BugTracker.Services
         public string FormatFileSize(long bytes)
         {
             int counter = 0;
-            decimal fileSize = bytes;
+            decimal number = bytes;
 
-            while (Math.Round(fileSize / 1024) >= 1)
+            while (Math.Round(number / 1024) >= 1)
             {
-                fileSize /= bytes; // Divides fileSize by bytes through every loop
+                number /= 1024; // Divides fileSize by bytes through every loop
                 counter++; // Adds 1 to counter through every loop
             }
 
-            return String.Format("{0:n1}{1}", fileSize, suffixes[counter]); // Returns a string formatted with the fileSize and suffixes[counter]
+            return String.Format("{0:n1}{1}", number, suffixes[counter]); // Returns a string formatted with the fileSize and suffixes[counter]
         }
         #endregion
 
         #region GetFileIcon
         public string GetFileIcon(string file)
         {
-            string fileImage = "default";
-
-            if (!string.IsNullOrWhiteSpace(file)) // If string is not null or white space
-            {
-                fileImage = Path.GetExtension(file).Replace(".", ""); // Replaces all . with an empty space and returns the file image path
-                return $"/img/png/{fileImage}.png";
-            }
-
-            return fileImage;
+            string ext = Path.GetExtension(file).Replace(".", "");
+            return $"/img/png/{ext}.png";
         } 
         #endregion
     }

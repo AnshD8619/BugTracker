@@ -24,7 +24,7 @@ namespace BugTracker.Models
         public string UserId { get; set; }
 
         [DisplayName("File Description")]
-        public int Description { get; set; }
+        public string Description { get; set; }
 
         [NotMapped]
         [DisplayName("Select a file")]
