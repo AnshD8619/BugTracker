@@ -23,7 +23,7 @@ namespace BugTracker.Models
         [DisplayName("Team Member")]
         public string UserId { get; set; }
 
-        [DisplayName("File Description")]
+        [DisplayName("File Description")] 
         public string Description { get; set; }
 
         [NotMapped]
