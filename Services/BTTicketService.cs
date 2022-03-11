@@ -390,7 +390,7 @@ namespace BugTracker.Services
                     .Include(t => t.Comments)
                     .Include(t => t.Attachments)
                     .Include(t => t.History)
-                    .FirstOrDefaultAsync(u => u.Id == ticketId); // Gets all tickets from Tickets table from database by comparing ticket ids
+                    .FirstOrDefaultAsync(t => t.Id == ticketId); // Gets all tickets from Tickets table from database by comparing ticket ids
             }
 
             catch (Exception)
