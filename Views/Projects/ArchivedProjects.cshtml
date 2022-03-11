@@ -13,9 +13,9 @@
 
 <h1>Archived Projects</h1>
 
-<table class="table">
-    <thead>
-        <tr>
+<table class="table table-striped">
+    <thead class = "bg-dark">
+        <tr class = "text-white">
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -29,21 +29,6 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageContentType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
             <th></th>
@@ -53,10 +38,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+                <td class = "col-2">
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
+                <td class = "col-5">
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
@@ -65,40 +50,22 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ImageFileName)
-                </td>
-                <td>
-                    @if (item.ImageFileData != null)
-                    {
-                        <img style="width:60px; height:60px" src="data:image/*;base64,@(Convert.ToBase64String(item.ImageFileData))" alt="" />
-                    }
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Archived)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
-                </td>
-                <td>
+                             
+                <td class = "col-1">
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
                 </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <td class = "col-2">
+                    <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-route-id="@item.Id"><i class="fs-5 bi-justify"></i></a>
                     @{
                         bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == btUser.Id;
                     }
-                    
+
                     @if (User.IsInRole(nameof(Roles.Admin)) || isProjectPM)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>                        
-                        <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
-                        
-                    }
+                       <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id"><i class="fs-5 bi-pencil"></i></a>
+                       <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success"><i class="fs-5 bi-bag-check"></i></a>      
 
-
-
+                    }                 
 
                 </td>
             </tr>

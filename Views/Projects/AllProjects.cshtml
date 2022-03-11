@@ -16,54 +16,44 @@
 @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a class = "badge bg-dark p-2" asp-action="Create">Create New</a>
     </p>
 }
 
-<table class="table">
+<table class="table table-striped">
     <thead>
-        <tr>
-            <th>
+        <tr class = "bg-dark">
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th>
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
-            <th>
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageContentType)
-            </th>
-            <th>
+            </th>            
+            
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
+            
+            <th class = "text-white">
                 @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
-            <th></th>
+            <th class = "text-white"></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody style="overflow-y:auto;">
         @foreach (var item in Model)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
+                <td class = "col-5">
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
@@ -71,48 +61,35 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ImageFileName)
-                </td>
-                <td>
-                    @if (item.ImageFileData != null)
-                    {
-                        <img style="width:60px; height:60px" src="data:image/*;base64,@(Convert.ToBase64String(item.ImageFileData))" alt="" />
-                    }
-                </td>
-
+                </td>                
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.Archived)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
+               
+                <td >
+                    @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <td >
+                    <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-route-id="@item.Id"><i class="fs-5 bi-justify"></i></a>
+
                     @{
                         bool isProjectPM = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id == btUser.Id;
                     }
+
                     @if (User.IsInRole(nameof(Roles.Admin)) || isProjectPM)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id"><i class="fs-5 bi-pencil"></i></a>
 
                         @if (item.Archived)
                         {
-                            <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
-                        }
+                            <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success"><i class="fs-5 bi-bag-check"></i></a>                       }
 
                         else
                         {
-                            <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+                            <a asp-action="Archive" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive"></i></a>
                         }
                     }
-
-
-
 
                 </td>
             </tr>

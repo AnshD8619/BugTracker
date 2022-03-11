@@ -66,6 +66,7 @@ namespace BugTracker.Models
         // Connects to other Models and database tables
         #region Navigational Properties
         public virtual Company Company { get; set; }
+        [DisplayName("Project Priority")]
         public virtual ProjectPriority ProjectPriority { get; set; }
         public virtual ICollection<BTUser> Members { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; } 

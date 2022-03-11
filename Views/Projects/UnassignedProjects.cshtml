@@ -7,11 +7,11 @@
 <h1>Unassigned Projects</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class = "badge bg-dark text-white p-2" asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
+<table class="table table-striped">
+    <thead class = "bg-dark">
+        <tr class = "text-white">
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>

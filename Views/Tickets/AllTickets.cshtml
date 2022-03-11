@@ -14,11 +14,11 @@
 <h1>All Tickets</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class = "badge bg-dark text-white p-2" asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
+<table class="table table-striped">
+    <thead class = "bg-dark">
+        <tr class = "text-white">
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -31,9 +31,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.Project)
             </th>
@@ -60,7 +58,16 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @if(item.Title == null)
+                    {
+                        @Html.Display("Not Assigned");
+                    }
+                    
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Title)
+                    }
+                    
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
@@ -71,9 +78,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Updated)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Archived)
-                </td>
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.Project.Name)
                 </td>
@@ -93,23 +98,23 @@
                     @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                   <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-route-id="@item.Id"><i class="fs-5 bi-justify"></i></a>
 
                     @if (User.IsInRole(nameof(Roles.Admin)) || item.DeveloperUserId == btUser.Id || item.OwnerUserId == btUser.Id || await ProjectService.IsAssignedProjectManagerAsync(btUser.Id, item.ProjectId))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id"><i class="fs-5 bi-pencil"></i></a>
                     }
                     @if (User.IsInRole(nameof(Roles.Admin)) || await ProjectService.IsAssignedProjectManagerAsync(btUser.Id, item.ProjectId))
                     {
 
                         if (item.Archived)
                         {
-                            <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
+                             <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success"><i class="fs-5 bi-bag-check"></i></a>          
                         }
 
                         else
                         {
-                            <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+                            <a asp-action="Archive" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive"></i></a>
                         }
                     }
                 </td>

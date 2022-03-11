@@ -1,3 +1,15 @@
-﻿@{
-    Layout = "/Views/Shared/_Layout.cshtml";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<BTUser> SignInManager
+
+@{
+    @if (SignInManager.IsSignedIn(User))
+    {
+        Layout = "/Views/Home/Dashboard.cshtml";
+    }
+
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+    
 }

@@ -60,7 +60,11 @@ namespace BugTracker.Models
         public virtual TicketType TicketType { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
+
+        [DisplayName("Submitter")]
         public virtual BTUser OwnerUser { get; set; }
+
+        [DisplayName("Developer")]
         public virtual BTUser DeveloperUser { get; set; }
         #endregion
 
