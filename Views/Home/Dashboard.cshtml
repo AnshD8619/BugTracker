@@ -36,10 +36,21 @@
         <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px; height:30px;" />
     }
 </a>
-<strong>@btUser.FullName</strong>
+<div class = "row">
+<div class = "col-1">
+<strong>@btUser.FullName</strong> 
 <span class="text-muted" style="font-size:x-small;">
     <strong>@Model.Company.Name</strong>
 </span>
+</div>
+<div class = "col-2">
+        @if (User.IsInRole(nameof(Roles.Admin)))
+        {
+            <a class = "btn btn-primary text-white" asp-controller = "UserRoles" asp-action = "ManageUserRoles">Manage User Roles</a>
+        }
+    </div>
+</div>
+
 
 
 <div>
@@ -98,16 +109,16 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row p-2">
             <div class="col-md-12 col">
                 <div class="row col-cols-4">
-                    <div class="card col m-1">
+                    <div class="card col-4">
                         <div class="card-body">
                             <h5>Project Tickets Count (%)</h5>
                             <div id="donut"></div>
                         </div>
                     </div>
-                    <div class="card col m-1 p-2">
+                    <div class="card col-4">
                         <div class="card-body">
                             <h5>Tickets by Priority</h5>
                             <!-- Morris: Donut -->
@@ -119,7 +130,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card col m-1 p-2">
+                    <div class="card col-4">
                         <div class="card-body">
                             <h5>Tickets by Status</h5>
                             <!-- ChartJS: Pie/Doughnut -->
